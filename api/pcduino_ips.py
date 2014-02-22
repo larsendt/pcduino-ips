@@ -28,7 +28,7 @@ class ip_api:
         with open("addrs.json", "r") as f:
             obj = json.load(f)
 
-        out = "host\t\tip\t\t\tlast seen\n\n"
+        out = "host\t\tip\t\t\tlast seen (PCDuinos should report once per minute)\n\n"
 
         for spot in ["spot-1", "spot-2", "spot-3", "spot-4"]:
             if spot in obj:

@@ -7,21 +7,21 @@ import re
 
 urls = (
         "/", "ip_api",
+        "/(.+)", "spot_api",
 )
 
 app = web.application(urls, globals())
 
 
-TEMPLATE = """
-<html>
-<head>
-<title>PCDuino IP Adresses!</title>
-</head>
-<body>
-<pre>%s</pre>
-</body>
-</html>
-"""
+class spot_api:
+    def GET(self, spot_name):
+        with open("addrs.json", "r") as f:
+            obj = json.load(f)
+            if spot_name in obj:
+                ip, t = obj[spot_name]
+                return ip
+            else:
+                return "none"
 
 class ip_api:
     def GET(self):

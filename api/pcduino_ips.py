@@ -4,6 +4,7 @@ import web
 import json
 import time
 import re
+import arrow
 
 urls = (
         "/", "ip_api",
@@ -33,6 +34,8 @@ class ip_api:
         for spot in ["spot-1", "spot-2", "spot-3", "spot-4"]:
             if spot in obj:
                 ip, t = obj[spot]
+                t = arrow.get(t).to("US/Mountain")
+                t = t.format("YYYY-MM-DD HH:mm:ss") + " (" + t.humanize() + ")"
             else:
                 ip, t = "unreported", "never"
 
@@ -43,7 +46,7 @@ class ip_api:
         data = web.input()
         host = data.host
         ip = data.ip
-        t = time.strftime("%Y/%m/%d %H:%M:%S MST", time.localtime())
+        t = arrow.utcnow().timestamp
 
         if not re.match(r"spot\-[1-4]", host):
             raise web.notfound()
@@ -55,6 +58,10 @@ class ip_api:
             obj = json.load(f)
 
         obj[host] = (ip, t)
+
+        with open("addrs.txt", "w") as f:
+            for host, (ip, t) in obj.items():
+                f.write("%s %s %s\n" % (host, ip, t))
 
         with open("addrs.json", "w") as f:
             json.dump(obj, f)

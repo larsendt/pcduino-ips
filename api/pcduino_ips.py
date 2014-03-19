@@ -5,6 +5,7 @@ import json
 import time
 import re
 import arrow
+import random
 
 urls = (
         "/", "ip_api",
@@ -40,6 +41,16 @@ class ip_api:
                 ip, t = "unreported", "never"
 
             out += "%s\t\t%s\t\t%s\n" % (spot, ip, t)
+
+        out += "\n"
+
+        with open("superlatives.txt", "r") as f:
+            superlatives = map(lambda x: x.replace("\n", ""), list(f))
+            superlatives = filter(lambda x: bool(x), superlatives)
+
+        with open("xhab.txt", "r") as f:
+            ascii_art = f.read()
+            out += ascii_art % (random.choice(superlatives))
         return out
 
     def POST(self):

@@ -30,13 +30,17 @@ class ip_api:
         with open("addrs.json", "r") as f:
             obj = json.load(f)
 
-        out = "host\t\tip\t\t\tlast seen (PCDuinos should report once per minute)\n\n"
+        out = ""
+        out += "host\t\tip\t\t\tlast seen (PCDuinos should report once per minute)\n\n"
 
         for spot in ["spot-1", "spot-2", "spot-3", "spot-4"]:
             if spot in obj:
                 ip, t = obj[spot]
                 t = arrow.get(t).to("US/Mountain")
-                t = t.format("YYYY-MM-DD HH:mm:ss") + " (" + t.humanize() + ")"
+                if spot == "spot-2":
+                    t = t.format("YYYY-MM-DD HH:mm:ss") + " (RIP)"
+                else:
+                    t = t.format("YYYY-MM-DD HH:mm:ss") + " (" + t.humanize() + ")"
             else:
                 ip, t = "unreported", "never"
 
@@ -47,6 +51,8 @@ class ip_api:
         with open("superlatives.txt", "r") as f:
             superlatives = map(lambda x: x.replace("\n", ""), list(f))
             superlatives = filter(lambda x: bool(x), superlatives)
+
+        superlatives = [""]
 
         with open("xhab.txt", "r") as f:
             ascii_art = f.read()
